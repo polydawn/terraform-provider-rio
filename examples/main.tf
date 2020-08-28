@@ -10,10 +10,18 @@ terraform {
 
 provider "rio" {}
 
-module "tar" {
-  source = "./tar"
+module "scan" {
+  source = "./scan"
 }
 
-output "test" {
-  value = module.tar.test
+output "scan_id" {
+  value = module.scan.id
+}
+
+output "scan_type" {
+  value = module.scan.type
+}
+
+output "scan_path" {
+  value = module.scan.path
 }

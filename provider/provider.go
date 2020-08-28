@@ -17,6 +17,7 @@ func Provider() *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"rio_test":  dataTestSchema(dataTest),
 			"rio_error": dataTestSchema(dataTestFail),
+			"rio_pack":  dataSourcePackSchema(),
 		},
 	}
 }
