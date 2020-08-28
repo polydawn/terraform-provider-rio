@@ -82,8 +82,7 @@ func dataSourceWareIdSchema() *schema.Resource {
 func dataWareId(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	packTypeString := d.Get("type").(string)
-	packType := api.PackType(packTypeString)
+	packType := api.PackType(d.Get("type").(string))
 
 	hash := d.Get("hash").(string)
 

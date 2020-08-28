@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 
 	api "go.polydawn.net/go-timeless-api"
 	"go.polydawn.net/go-timeless-api/rio"
@@ -29,6 +30,19 @@ func dataSourcePackSchema() *schema.Resource {
 				Computed:    true,
 				Description: `The id of the packed fileset`,
 			},
+			"target": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: `Warehouse for the packed ware. Leave empty to scan only.`,
+			},
+			"filters": {
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Description: `Configure filters for file properties, such as mtime, uid, gid, etc. By default many of these attribute will be flattened.`,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -44,8 +58,22 @@ func dataPack(ctx context.Context, d *schema.ResourceData, m interface{}) diag.D
 		return diag.FromErr(err)
 	}
 	path := d.Get("path").(string)
+	target := api.WarehouseLocation(d.Get("target").(string))
 
-	wareId, err := packFunc(ctx, api.PackType(packType), path, api.FilesetPackFilter_Conservative, "", rio.Monitor{})
+	// handle filters
+	filters := d.Get("filters").(map[string]interface{})
+
+	filter := api.FilesetPackFilter_Conservative
+	for k, v := range filters {
+		filt, err := api.ParseFilesetPackFilter(fmt.Sprintf("%s=%s", k, v))
+		if err != nil {
+			return diag.FromErr(err)
+		}
+
+		filter = filter.Apply(filt)
+	}
+
+	wareId, err := packFunc(ctx, api.PackType(packType), path, filter, target, rio.Monitor{})
 	if err != nil {
 		return diag.FromErr(err)
 	}

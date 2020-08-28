@@ -2,6 +2,9 @@
 terraform-provider-rio
 bin
 
+# Ignore any generated tar files
+*.tar
+
 # Local .terraform directories
 **/.terraform/*
 
