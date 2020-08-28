@@ -15,9 +15,11 @@ func Provider() *schema.Provider {
 	return &schema.Provider{
 		ResourcesMap: map[string]*schema.Resource{},
 		DataSourcesMap: map[string]*schema.Resource{
-			"rio_test":  dataTestSchema(dataTest),
-			"rio_error": dataTestSchema(dataTestFail),
-			"rio_pack":  dataSourcePackSchema(),
+			"rio_test":          dataTestSchema(dataTest),
+			"rio_error":         dataTestSchema(dataTestFail),
+			"rio_pack":          dataSourcePackSchema(),
+			"rio_ware_id":       dataSourceWareIdSchema(),
+			"rio_parse_ware_id": dataSourceParseWareIdSchema(),
 		},
 	}
 }
